@@ -24,3 +24,5 @@
 # IntelliJ
 out/
 /.idea/
+
+golang-lc3-vm
