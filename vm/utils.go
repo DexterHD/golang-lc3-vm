@@ -1,4 +1,4 @@
-package main
+package vm
 
 import (
 	"golang.org/x/crypto/ssh/terminal"
