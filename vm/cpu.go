@@ -61,6 +61,10 @@ type LC3CPU struct {
 func NewCpu() *LC3CPU {
 	return &LC3CPU{
 		StartPosition: PC_START,
+		RAM: LC3RAM{
+			CheckKey: CheckKeyPressed,
+			GetChar:  GetCharFromStdin,
+		},
 	}
 }
 
