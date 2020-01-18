@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// Memory
+// RAM
 const MaxMemorySize uint16 = 65535
 
 const (
@@ -14,23 +14,30 @@ const (
 	MR_KBDR uint16 = 0xfe02 // keyboard data
 )
 
-type LC3RAM [MaxMemorySize]uint16
+type CheckKey func() bool
+type GetChar func() uint16
+
+type LC3RAM struct {
+	CheckKey
+	GetChar
+	Storage [MaxMemorySize]uint16
+}
 
 func (m *LC3RAM) Write(address, val uint16) {
-	m[address] = val
+	m.Storage[address] = val
 }
 
 func (m *LC3RAM) Read(address uint16) uint16 {
 	if address == MR_KBSR {
-		if checkKey() {
-			m[MR_KBSR] = 1 << 15
+		if m.CheckKey() {
+			m.Storage[MR_KBSR] = 1 << 15
 			// read a single ASCII char
-			m[MR_KBDR] = GetChar()
+			m.Storage[MR_KBDR] = m.GetChar()
 		} else {
-			m[MR_KBSR] = 0
+			m.Storage[MR_KBSR] = 0
 		}
 	}
-	return m[address]
+	return m.Storage[address]
 }
 
 func (m *LC3RAM) Load(path string) {
@@ -42,7 +49,7 @@ func (m *LC3RAM) Load(path string) {
 	origin := binary.BigEndian.Uint16(b[:2])
 
 	for i := 2; i < len(b); i += 2 {
-		m[origin] = binary.BigEndian.Uint16(b[i : i+2])
+		m.Storage[origin] = binary.BigEndian.Uint16(b[i : i+2])
 		origin++
 	}
 }

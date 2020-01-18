@@ -15,6 +15,6 @@ func main() {
 	}
 
 	lc3 := vm.NewCpu()
-	lc3.Memory.Load(args[0])
+	lc3.RAM.Load(args[0])
 	lc3.Run()
 }

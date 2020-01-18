@@ -13,13 +13,13 @@ func SignExtend(x uint16, bitCount int) uint16 {
 	return x
 }
 
-// checkKey checks if a key was pressed
-func checkKey() bool {
+// CheckKeyPushed checks if a key was pressed
+func CheckKeyPressed() bool {
 	fi, _ := os.Stdin.Stat()
 	return fi.Size() > 0
 }
 
-func GetChar() uint16 {
+func GetCharFromStdin() uint16 {
 	// fd 0 is stdin
 	state, err := terminal.MakeRaw(0)
 	if err != nil {

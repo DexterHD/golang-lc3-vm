@@ -51,7 +51,7 @@ const PC_START uint16 = 0x3000
 
 type LC3CPU struct {
 	registers          [R_COUNT]uint16
-	Memory             LC3RAM
+	RAM                LC3RAM
 	currentInstruction uint16
 	currentOperation   uint16
 	isRunning          bool
@@ -66,7 +66,10 @@ func NewCpu() *LC3CPU {
 
 func (v *LC3CPU) Reset() {
 	v.registers = [R_COUNT]uint16{}
-	v.Memory = LC3RAM{}
+	v.RAM = LC3RAM{
+		CheckKey: CheckKeyPressed,
+		GetChar:  GetCharFromStdin,
+	}
 	v.currentInstruction = 0
 	v.currentOperation = 0
 	v.isRunning = false
@@ -79,7 +82,7 @@ func (v *LC3CPU) Run() {
 	v.isRunning = true
 	for v.isRunning {
 		// Fetch
-		v.currentInstruction = v.Memory.Read(v.registers[R_PC])
+		v.currentInstruction = v.RAM.Read(v.registers[R_PC])
 		if v.registers[R_PC] < MaxMemorySize {
 			v.registers[R_PC]++
 		}
@@ -240,7 +243,7 @@ func (v *LC3CPU) jumpRegister() {
 func (v *LC3CPU) load() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
-	v.registers[r0] = v.Memory.Read(v.registers[R_PC] + pcOffset)
+	v.registers[r0] = v.RAM.Read(v.registers[R_PC] + pcOffset)
 	v.updateFlags(r0)
 }
 
@@ -249,8 +252,8 @@ func (v *LC3CPU) ldi() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	/* PCoffset 9*/
 	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
-	/* add pcOffset to the current PC, look at that Memory location to get the final address */
-	v.registers[r0] = v.Memory.Read(v.Memory.Read(v.registers[R_PC] + pcOffset))
+	/* add pcOffset to the current PC, look at that RAM location to get the final address */
+	v.registers[r0] = v.RAM.Read(v.RAM.Read(v.registers[R_PC] + pcOffset))
 	v.updateFlags(r0)
 }
 
@@ -258,7 +261,7 @@ func (v *LC3CPU) loadRegister() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	r1 := (v.currentInstruction >> 6) & 0x7
 	offset := SignExtend(v.currentInstruction&0x3F, 6)
-	v.registers[r0] = v.Memory.Read(v.registers[r1] + offset)
+	v.registers[r0] = v.RAM.Read(v.registers[r1] + offset)
 	v.updateFlags(r0)
 }
 
@@ -272,20 +275,20 @@ func (v *LC3CPU) loadEffectiveAddress() {
 func (v *LC3CPU) store() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
-	v.Memory.Write(v.registers[R_PC]+pcOffset, v.registers[r0])
+	v.RAM.Write(v.registers[R_PC]+pcOffset, v.registers[r0])
 }
 
 func (v *LC3CPU) storeIndirect() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
-	v.Memory.Write(v.Memory.Read(v.registers[R_PC]+pcOffset), v.registers[r0])
+	v.RAM.Write(v.RAM.Read(v.registers[R_PC]+pcOffset), v.registers[r0])
 }
 
 func (v *LC3CPU) storeRegister() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	r1 := (v.currentInstruction >> 6) & 0x7
 	offset := SignExtend(v.currentInstruction&0x3F, 6)
-	v.Memory.Write(v.registers[r1]+offset, v.registers[r0])
+	v.RAM.Write(v.registers[r1]+offset, v.registers[r0])
 }
 
 const (
@@ -299,7 +302,7 @@ const (
 
 func (v *LC3CPU) trapGetc() {
 	// read a single ASCII char
-	v.registers[R_R0] = GetChar()
+	v.registers[R_R0] = v.RAM.GetChar()
 }
 
 func (v *LC3CPU) trapOut() {
@@ -307,15 +310,15 @@ func (v *LC3CPU) trapOut() {
 }
 
 func (v *LC3CPU) trapPuts() {
-	for i := v.registers[R_R0]; v.Memory[i] != 0x0000; i++ {
-		fmt.Printf("%c", v.Memory[i])
+	for i := v.registers[R_R0]; v.RAM.Storage[i] != 0x0000; i++ {
+		fmt.Printf("%c", v.RAM.Storage[i])
 	}
 	fmt.Print("\n")
 }
 
 func (v *LC3CPU) trapIn() {
 	fmt.Print("Input a character: ")
-	c := GetChar()
+	c := v.RAM.GetChar()
 	fmt.Printf("%c", c)
 	v.registers[R_R0] = c
 }
@@ -324,10 +327,10 @@ func (v *LC3CPU) trapPutsp() {
 	// one char per byte (two bytes per word)
 	// here we need to swap back to
 	// big endian format
-	for i := v.registers[R_R0]; v.Memory[i] > 0; i++ {
-		ch1 := v.Memory[i] & 0xFF
+	for i := v.registers[R_R0]; v.RAM.Storage[i] > 0; i++ {
+		ch1 := v.RAM.Storage[i] & 0xFF
 		fmt.Printf("%c", ch1)
-		ch2 := v.Memory[i] >> 8
+		ch2 := v.RAM.Storage[i] >> 8
 		if ch2 > 0 {
 			fmt.Printf("%c", ch2)
 		}
