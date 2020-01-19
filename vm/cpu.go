@@ -184,7 +184,7 @@ func (v *LC3CPU) add() {
 	immFlag := (v.currentInstruction >> 5) & 0x1
 
 	if immFlag == 0x1 {
-		imm5 := SignExtend(v.currentInstruction&0x1F, 5)
+		imm5 := signExtend(v.currentInstruction&0x1F, 5)
 		v.registers[r0] = v.registers[r1] + imm5
 	} else {
 		r2 := v.currentInstruction & 0x7
@@ -200,7 +200,7 @@ func (v *LC3CPU) and() {
 	immFlag := (v.currentInstruction >> 5) & 0x1
 
 	if immFlag == 0x1 {
-		imm5 := SignExtend(v.currentInstruction&0x1F, 5)
+		imm5 := signExtend(v.currentInstruction&0x1F, 5)
 		v.registers[r0] = v.registers[r1] & imm5
 	} else {
 		r2 := v.currentInstruction & 0x7
@@ -218,7 +218,7 @@ func (v *LC3CPU) not() {
 }
 
 func (v *LC3CPU) branch() {
-	pcOffset := SignExtend((v.currentInstruction)&0x1ff, 9)
+	pcOffset := signExtend((v.currentInstruction)&0x1ff, 9)
 	condFlag := (v.currentInstruction >> 9) & 0x7
 	if (condFlag & v.registers[R_COND]) != 0 { // true
 		v.registers[R_PC] += pcOffset
@@ -233,7 +233,7 @@ func (v *LC3CPU) jump() {
 
 func (v *LC3CPU) jumpRegister() {
 	r1 := (v.currentInstruction >> 6) & 0x7
-	longPcOffset := SignExtend(v.currentInstruction&0x7ff, 11)
+	longPcOffset := signExtend(v.currentInstruction&0x7ff, 11)
 	longFlag := (v.currentInstruction >> 11) & 1
 
 	v.registers[R_R7] = v.registers[R_PC]
@@ -246,7 +246,7 @@ func (v *LC3CPU) jumpRegister() {
 
 func (v *LC3CPU) load() {
 	r0 := (v.currentInstruction >> 9) & 0x7
-	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
+	pcOffset := signExtend(v.currentInstruction&0x1ff, 9)
 	v.registers[r0] = v.RAM.Read(v.registers[R_PC] + pcOffset)
 	v.updateFlags(r0)
 }
@@ -255,7 +255,7 @@ func (v *LC3CPU) ldi() {
 	/* destination register (DR) */
 	r0 := (v.currentInstruction >> 9) & 0x7
 	/* PCoffset 9*/
-	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
+	pcOffset := signExtend(v.currentInstruction&0x1ff, 9)
 	/* add pcOffset to the current PC, look at that RAM location to get the final address */
 	v.registers[r0] = v.RAM.Read(v.RAM.Read(v.registers[R_PC] + pcOffset))
 	v.updateFlags(r0)
@@ -264,34 +264,34 @@ func (v *LC3CPU) ldi() {
 func (v *LC3CPU) loadRegister() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	r1 := (v.currentInstruction >> 6) & 0x7
-	offset := SignExtend(v.currentInstruction&0x3F, 6)
+	offset := signExtend(v.currentInstruction&0x3F, 6)
 	v.registers[r0] = v.RAM.Read(v.registers[r1] + offset)
 	v.updateFlags(r0)
 }
 
 func (v *LC3CPU) loadEffectiveAddress() {
 	r0 := (v.currentInstruction >> 9) & 0x7
-	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
+	pcOffset := signExtend(v.currentInstruction&0x1ff, 9)
 	v.registers[r0] = v.registers[R_PC] + pcOffset
 	v.updateFlags(r0)
 }
 
 func (v *LC3CPU) store() {
 	r0 := (v.currentInstruction >> 9) & 0x7
-	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
+	pcOffset := signExtend(v.currentInstruction&0x1ff, 9)
 	v.RAM.Write(v.registers[R_PC]+pcOffset, v.registers[r0])
 }
 
 func (v *LC3CPU) storeIndirect() {
 	r0 := (v.currentInstruction >> 9) & 0x7
-	pcOffset := SignExtend(v.currentInstruction&0x1ff, 9)
+	pcOffset := signExtend(v.currentInstruction&0x1ff, 9)
 	v.RAM.Write(v.RAM.Read(v.registers[R_PC]+pcOffset), v.registers[r0])
 }
 
 func (v *LC3CPU) storeRegister() {
 	r0 := (v.currentInstruction >> 9) & 0x7
 	r1 := (v.currentInstruction >> 6) & 0x7
-	offset := SignExtend(v.currentInstruction&0x3F, 6)
+	offset := signExtend(v.currentInstruction&0x3F, 6)
 	v.RAM.Write(v.registers[r1]+offset, v.registers[r0])
 }
 
@@ -356,4 +356,11 @@ func (v *LC3CPU) trapHalt() {
 		log.Fatalf("Can't write to device: %#v", v.output)
 	}
 	v.isRunning = false
+}
+
+func signExtend(x uint16, bitCount int) uint16 {
+	if (x>>(bitCount-1))&1 == 1 {
+		x |= 0xFFFF << bitCount
+	}
+	return x
 }

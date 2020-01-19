@@ -6,13 +6,6 @@ import (
 	"os"
 )
 
-func SignExtend(x uint16, bitCount int) uint16 {
-	if (x>>(bitCount-1))&1 == 1 {
-		x |= 0xFFFF << bitCount
-	}
-	return x
-}
-
 // CheckKeyPushed checks if a key was pressed
 func CheckKeyPressed() bool {
 	fi, _ := os.Stdin.Stat()

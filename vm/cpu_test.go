@@ -430,3 +430,8 @@ func TestLC3CPU_trapHalt(t *testing.T) {
 
 	vm.output = nil
 }
+
+func Test_signExtend(t *testing.T) {
+	assert.Equal(t, uint16(0b1111_1111_1111_1111), signExtend(0b11111, 5))
+	assert.Equal(t, uint16(0b0000_0000_0000_1111), signExtend(0b01111, 5))
+}
