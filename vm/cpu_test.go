@@ -1,12 +1,20 @@
 package vm
 
 import (
+	"bytes"
 	"github.com/stretchr/testify/assert"
+	"io"
 	"testing"
 )
 
 func TestVirtualMachine_updateFlags(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
+
 	vm.registers[R_R0] = 0b0000000000000001 // int16(1)
 	vm.registers[R_R1] = 0b1111111111111111 // int16(-1)
 	vm.registers[R_R2] = 0b0000000000000000 // int16(0)
@@ -20,7 +28,12 @@ func TestVirtualMachine_updateFlags(t *testing.T) {
 }
 
 func TestVirtualMachine_add(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.registers[R_R1] = 0x1
 	vm.registers[R_R2] = 0x2
@@ -41,7 +54,12 @@ func TestVirtualMachine_add(t *testing.T) {
 }
 
 func TestVirtualMachine_and(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.registers[R_R1] = 0x9
 	vm.registers[R_R2] = 0x7
@@ -62,7 +80,12 @@ func TestVirtualMachine_and(t *testing.T) {
 }
 
 func TestVirtualMachine_not(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.registers[R_R0] = 0xffff
 	vm.registers[R_R1] = 0x0000
@@ -75,7 +98,12 @@ func TestVirtualMachine_not(t *testing.T) {
 }
 
 func TestVirtualMachine_branch(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Storage[0x0003] = 0x1111
 	vm.registers[R_COND] = FL_ZRO
@@ -106,7 +134,12 @@ func TestVirtualMachine_branch(t *testing.T) {
 }
 
 func TestLC3CPU_jump(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Storage[0x0001] = 0x1111
 	vm.registers[R_R2] = 0x3100
@@ -119,7 +152,12 @@ func TestLC3CPU_jump(t *testing.T) {
 }
 
 func TestLC3CPU_jumpRegister(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.registers[R_PC] = PC_START
 	vm.currentInstruction = 0b0100_1_00000001000
@@ -140,7 +178,12 @@ func TestLC3CPU_jumpRegister(t *testing.T) {
 }
 
 func TestLC3CPU_load(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Write(0x3004, 2)
 
@@ -153,7 +196,12 @@ func TestLC3CPU_load(t *testing.T) {
 }
 
 func TestLC3CPU_ldi(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Write(0x3004, 0x3008)
 	vm.RAM.Write(0x3008, 5)
@@ -167,7 +215,12 @@ func TestLC3CPU_ldi(t *testing.T) {
 }
 
 func TestLC3CPU_loadRegister(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Write(0x3014, 5)
 
@@ -181,7 +234,12 @@ func TestLC3CPU_loadRegister(t *testing.T) {
 }
 
 func TestLC3CPU_loadEffectiveAddress(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Write(0x3014, 5)
 
@@ -194,7 +252,12 @@ func TestLC3CPU_loadEffectiveAddress(t *testing.T) {
 }
 
 func TestLC3CPU_store(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.registers[R_PC] = PC_START
 	vm.registers[R_R2] = 0xff
@@ -206,7 +269,12 @@ func TestLC3CPU_store(t *testing.T) {
 }
 
 func TestLC3CPU_storeIndirect(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.RAM.Write(0x3004, 0x3010)
 
@@ -220,7 +288,12 @@ func TestLC3CPU_storeIndirect(t *testing.T) {
 }
 
 func TestLC3CPU_storeRegister(t *testing.T) {
-	vm := NewCpu()
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
 
 	vm.registers[R_PC] = PC_START
 	vm.registers[R_R1] = 0x3001
@@ -230,4 +303,130 @@ func TestLC3CPU_storeRegister(t *testing.T) {
 
 	assert.Equal(t, uint16(0xff), vm.RAM.Read(0x3005))
 	vm.Reset()
+}
+
+func TestLC3CPU_trapGetc(t *testing.T) {
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
+
+	vm.registers[R_PC] = PC_START
+
+	vm.trapGetc()
+
+	assert.Equal(t, testChar, vm.registers[R_R0])
+	vm.Reset()
+}
+
+func TestLC3CPU_trapOut(t *testing.T) {
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
+
+	vm.registers[R_R0] = testChar
+	vm.trapOut()
+
+	r, _, err := out.ReadRune()
+	assert.Nil(t, err)
+	assert.Equal(t, testChar, uint16(r))
+
+	vm.Reset()
+
+	vm.output = nil
+}
+
+func TestLC3CPU_trapPuts(t *testing.T) {
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
+
+	vm.RAM.Write(0x3010, testChar)
+	vm.RAM.Write(0x3011, testChar)
+	vm.RAM.Write(0x3012, testChar)
+	vm.RAM.Write(0x3013, 0x0000)
+
+	vm.registers[R_R0] = 0x3010
+	vm.trapPuts()
+
+	l, err := out.ReadBytes(0x0000)
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, "AAA", string(l))
+
+	vm.Reset()
+
+	vm.output = nil
+}
+
+func TestLC3CPU_trapIn(t *testing.T) {
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(true),
+		GetChar:  GetTestChar,
+	}, &out)
+
+	vm.trapIn()
+
+	l, err := out.ReadBytes(0x0000)
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, "Input a character: A", string(l))
+	assert.Equal(t, "A", string(vm.registers[R_R0]))
+
+	vm.Reset()
+
+	vm.output = nil
+}
+
+func TestLC3CPU_trapPutsp(t *testing.T) {
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(false),
+		GetChar:  GetTestChar,
+	}, &out)
+
+	vm.RAM.Write(0x3010, 0x4142)
+	vm.RAM.Write(0x3011, 0x4344)
+	vm.RAM.Write(0x3012, 0x0000)
+
+	vm.registers[R_R0] = 0x3010
+
+	vm.trapPutsp()
+
+	l, err := out.ReadString(0x0000)
+	assert.Equal(t, io.EOF, err)
+	assert.Equal(t, "BADC", l)
+
+	vm.Reset()
+
+	vm.output = nil
+}
+
+func TestLC3CPU_trapHalt(t *testing.T) {
+	var out bytes.Buffer
+
+	vm := NewCpu(&LC3RAM{
+		CheckKey: KeyPressedMock(true),
+		GetChar:  GetTestChar,
+	}, &out)
+
+	vm.trapHalt()
+
+	l, err := out.ReadString('\n')
+	assert.Nil(t, err)
+	assert.Equal(t, "HALT\n", l)
+	assert.False(t, vm.isRunning)
+
+	vm.Reset()
+
+	vm.output = nil
 }

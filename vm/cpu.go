@@ -2,6 +2,7 @@ package vm
 
 import (
 	"fmt"
+	"io"
 	"log"
 )
 
@@ -51,26 +52,25 @@ const PC_START uint16 = 0x3000
 
 type LC3CPU struct {
 	registers          [R_COUNT]uint16
-	RAM                LC3RAM
+	RAM                *LC3RAM
 	currentInstruction uint16
 	currentOperation   uint16
 	isRunning          bool
 	StartPosition      uint16
+	output             io.Writer
 }
 
-func NewCpu() *LC3CPU {
+func NewCpu(ram *LC3RAM, output io.Writer) *LC3CPU {
 	return &LC3CPU{
 		StartPosition: PC_START,
-		RAM: LC3RAM{
-			CheckKey: CheckKeyPressed,
-			GetChar:  GetCharFromStdin,
-		},
+		RAM:           ram,
+		output:        output,
 	}
 }
 
 func (v *LC3CPU) Reset() {
 	v.registers = [R_COUNT]uint16{}
-	v.RAM = LC3RAM{
+	v.RAM = &LC3RAM{
 		CheckKey: CheckKeyPressed,
 		GetChar:  GetCharFromStdin,
 	}
@@ -157,7 +157,7 @@ func (v *LC3CPU) Run() {
 		case OP_RES:
 		case OP_RTI:
 		default:
-			log.Printf("BAD OPCODE: %016b", v.currentOperation)
+			log.Printf("BAD OPCODE: %016b\n", v.currentOperation)
 			v.isRunning = false
 		}
 	}
@@ -310,20 +310,30 @@ func (v *LC3CPU) trapGetc() {
 }
 
 func (v *LC3CPU) trapOut() {
-	fmt.Printf("%c", v.registers[R_R0])
+	if _, err := fmt.Fprintf(v.output, "%c", v.registers[R_R0]); err != nil {
+		log.Fatalf("Can't write to device: %#v", v.output)
+	}
 }
 
 func (v *LC3CPU) trapPuts() {
 	for i := v.registers[R_R0]; v.RAM.Storage[i] != 0x0000; i++ {
-		fmt.Printf("%c", v.RAM.Storage[i])
+		if _, err := fmt.Fprintf(v.output, "%c", v.RAM.Storage[i]); err != nil {
+			log.Fatalf("Can't write to device: %#v", v.output)
+		}
 	}
-	fmt.Print("\n")
 }
 
 func (v *LC3CPU) trapIn() {
-	fmt.Print("Input a character: ")
+	if _, err := fmt.Fprintf(v.output, "Input a character: "); err != nil {
+		log.Fatalf("Can't write to device: %#v", v.output)
+	}
+
 	c := v.RAM.GetChar()
-	fmt.Printf("%c", c)
+
+	if _, err := fmt.Fprintf(v.output, "%c", c); err != nil {
+		log.Fatalf("Can't write to device: %#v", v.output)
+	}
+
 	v.registers[R_R0] = c
 }
 
@@ -333,16 +343,17 @@ func (v *LC3CPU) trapPutsp() {
 	// big endian format
 	for i := v.registers[R_R0]; v.RAM.Storage[i] > 0; i++ {
 		ch1 := v.RAM.Storage[i] & 0xFF
-		fmt.Printf("%c", ch1)
+		fmt.Fprintf(v.output, "%c", ch1)
 		ch2 := v.RAM.Storage[i] >> 8
 		if ch2 > 0 {
-			fmt.Printf("%c", ch2)
+			fmt.Fprintf(v.output, "%c", ch2)
 		}
 	}
-	fmt.Print("\n")
 }
 
 func (v *LC3CPU) trapHalt() {
-	fmt.Println("HALT")
+	if _, err := fmt.Fprintln(v.output, "HALT"); err != nil {
+		log.Fatalf("Can't write to device: %#v", v.output)
+	}
 	v.isRunning = false
 }

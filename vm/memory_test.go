@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+const testChar = uint16(0x41) // "A"
+
 func TestLC3RAM_Load(t *testing.T) {
 	t.Skip()
 }
@@ -23,7 +25,7 @@ func TestLC3RAM_Write(t *testing.T) {
 	assert.Equal(t, uint16(0xFF), m.Read(0x100))
 
 	address := m.Read(MR_KBSR)
-	assert.Equal(t, uint16(0x61), m.Storage[MR_KBDR])
+	assert.Equal(t, "A", string(m.Storage[MR_KBDR]))
 	assert.Equal(t, uint16(0b1000_0000_0000_0000), address)
 
 	m.CheckKey = KeyPressedMock(false)
@@ -36,5 +38,5 @@ func KeyPressedMock(status bool) func() bool {
 }
 
 func GetTestChar() uint16 {
-	return uint16(0x61)
+	return testChar
 }

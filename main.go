@@ -14,7 +14,11 @@ func main() {
 		return
 	}
 
-	lc3 := vm.NewCpu()
+	lc3 := vm.NewCpu(&vm.LC3RAM{
+		CheckKey: vm.CheckKeyPressed,
+		GetChar:  vm.GetCharFromStdin,
+	}, os.Stdout)
+
 	lc3.RAM.Load(args[0])
 	lc3.Run()
 }
