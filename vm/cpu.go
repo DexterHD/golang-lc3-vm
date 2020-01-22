@@ -50,6 +50,7 @@ const (
 
 const PC_START uint16 = 0x3000
 
+// LC3CPU describes CPU abstraction.
 type LC3CPU struct {
 	registers          [R_COUNT]uint16
 	RAM                *LC3RAM
@@ -60,6 +61,7 @@ type LC3CPU struct {
 	output             io.Writer
 }
 
+// NewCpu creates new CPU instance.
 func NewCpu(ram *LC3RAM, output io.Writer) *LC3CPU {
 	return &LC3CPU{
 		StartPosition: PC_START,
@@ -68,6 +70,7 @@ func NewCpu(ram *LC3RAM, output io.Writer) *LC3CPU {
 	}
 }
 
+// Reset resets CPU to initial state.
 func (v *LC3CPU) Reset() {
 	v.registers = [R_COUNT]uint16{}
 	v.RAM = &LC3RAM{
@@ -79,6 +82,7 @@ func (v *LC3CPU) Reset() {
 	v.isRunning = false
 }
 
+// Run runs CPU.
 func (v *LC3CPU) Run() {
 	// Set the PC to starting position
 	// 0x3000 is the default

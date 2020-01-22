@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"golang-lc3-vm/vm"
+	"github.com/DexterHD/golang-lc3-vm/vm"
 )
 
 func main() {

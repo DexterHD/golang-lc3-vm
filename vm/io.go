@@ -12,6 +12,7 @@ func CheckKeyPressed() bool {
 	return fi.Size() > 0
 }
 
+// GetCharFromStdin get one char from standard input.
 func GetCharFromStdin() uint16 {
 	// fd 0 is stdin
 	state, err := terminal.MakeRaw(0)
