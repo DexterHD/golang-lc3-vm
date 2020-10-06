@@ -1,9 +1,10 @@
 package vm
 
 import (
-	"golang.org/x/crypto/ssh/terminal"
 	"log"
 	"os"
+
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // CheckKeyPushed checks if a key was pressed

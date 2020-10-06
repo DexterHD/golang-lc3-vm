@@ -2,9 +2,10 @@ package vm
 
 import (
 	"bytes"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestVirtualMachine_updateFlags(t *testing.T) {

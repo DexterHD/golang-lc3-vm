@@ -1,8 +1,9 @@
 package vm
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const testChar = uint16(0x41) // "A"

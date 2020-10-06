@@ -1,4 +1,4 @@
-module github.com/DexterHD/golang-lc3-vm
+module github.com/idexter/golang-lc3-vm
 
 go 1.13
 
