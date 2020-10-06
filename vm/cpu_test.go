@@ -380,7 +380,7 @@ func TestLC3CPU_trapIn(t *testing.T) {
 	l, err := out.ReadBytes(0x0000)
 	assert.Equal(t, io.EOF, err)
 	assert.Equal(t, "Input a character: A", string(l))
-	assert.Equal(t, "A", string(vm.registers[R_R0]))
+	assert.Equal(t, 'A', rune(vm.registers[R_R0]))
 
 	vm.Reset()
 

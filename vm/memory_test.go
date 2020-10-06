@@ -26,7 +26,7 @@ func TestLC3RAM_Write(t *testing.T) {
 	assert.Equal(t, uint16(0xFF), m.Read(0x100))
 
 	address := m.Read(MR_KBSR)
-	assert.Equal(t, "A", string(m.Storage[MR_KBDR]))
+	assert.Equal(t, 'A', rune(m.Storage[MR_KBDR]))
 	assert.Equal(t, uint16(0b1000_0000_0000_0000), address)
 
 	m.CheckKey = KeyPressedMock(false)
