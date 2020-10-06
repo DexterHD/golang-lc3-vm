@@ -99,65 +99,45 @@ func (v *LC3CPU) Run() {
 		switch v.currentOperation {
 		case OP_ADD:
 			v.add()
-			break
 		case OP_AND:
 			v.and()
-			break
 		case OP_NOT:
 			v.not()
-			break
 		case OP_BR:
 			v.branch()
-			break
 		case OP_JMP:
 			v.jump()
-			break
 		case OP_JSR:
 			v.jumpRegister()
-			break
 		case OP_LD:
 			v.load()
-			break
 		case OP_LDI:
 			v.ldi()
-			break
 		case OP_LDR:
 			v.loadRegister()
-			break
 		case OP_LEA:
 			v.loadEffectiveAddress()
-			break
 		case OP_ST:
 			v.store()
-			break
 		case OP_STI:
 			v.storeIndirect()
-			break
 		case OP_STR:
 			v.storeRegister()
-			break
 		case OP_TRAP:
 			switch v.currentInstruction & 0xFF {
 			case TRAP_GETC:
 				v.trapGetc()
-				break
 			case TRAP_OUT:
 				v.trapOut()
-				break
 			case TRAP_PUTS:
 				v.trapPuts()
-				break
 			case TRAP_IN:
 				v.trapIn()
-				break
 			case TRAP_PUTSP:
 				v.trapPutsp()
-				break
 			case TRAP_HALT:
 				v.trapHalt()
-				break
 			}
-			break
 		case OP_RES:
 		case OP_RTI:
 		default:

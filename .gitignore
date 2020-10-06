@@ -26,3 +26,6 @@ out/
 /.idea/
 
 golang-lc3-vm
+
+coverage.txt
+coverage.xml
