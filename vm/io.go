@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-// CheckKeyPushed checks if a key was pressed
+// CheckKeyPressed checks if a key was pressed.
 func CheckKeyPressed() bool {
 	fi, _ := os.Stdin.Stat()
 	return fi.Size() > 0
@@ -27,6 +27,8 @@ func GetCharFromStdin() uint16 {
 	}()
 
 	b := make([]byte, 1)
-	os.Stdin.Read(b)
+	if _, err := os.Stdin.Read(b); err != nil {
+		log.Println("warning, failed to read from stdin:", err)
+	}
 	return uint16(b[0])
 }

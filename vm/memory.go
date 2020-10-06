@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// RAM
+// MaxMemorySize maximum RAM size.
 const MaxMemorySize uint16 = 65535
 
 const (
@@ -14,7 +14,10 @@ const (
 	MR_KBDR uint16 = 0xfe02 // keyboard data
 )
 
+// CheckKey checks is keyboard key has been pressed.
 type CheckKey func() bool
+
+// GetChar reads single character from input device.
 type GetChar func() uint16
 
 // LC3RAM describes memory abstraction for LC3CPU.
@@ -43,9 +46,9 @@ func (m *LC3RAM) Read(address uint16) uint16 {
 	return m.Storage[address]
 }
 
-// Load load program to memory.
+// Load loads program into the memory.
 func (m *LC3RAM) Load(path string) {
-	b, err := ioutil.ReadFile(path)
+	b, err := ioutil.ReadFile(path) //nolint: gosec
 	if err != nil {
 		log.Fatalf("Can't read file, reason: %v", err)
 	}

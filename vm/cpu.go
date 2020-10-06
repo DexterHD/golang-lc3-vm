@@ -61,8 +61,8 @@ type LC3CPU struct {
 	output             io.Writer
 }
 
-// NewCpu creates new CPU instance.
-func NewCpu(ram *LC3RAM, output io.Writer) *LC3CPU {
+// NewCPU creates new LC-3 CPU instance.
+func NewCPU(ram *LC3RAM, output io.Writer) *LC3CPU {
 	return &LC3CPU{
 		StartPosition: PC_START,
 		RAM:           ram,

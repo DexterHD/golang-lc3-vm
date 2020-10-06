@@ -14,7 +14,7 @@ func main() {
 		return
 	}
 
-	lc3 := vm.NewCpu(&vm.LC3RAM{
+	lc3 := vm.NewCPU(&vm.LC3RAM{
 		CheckKey: vm.CheckKeyPressed,
 		GetChar:  vm.GetCharFromStdin,
 	}, os.Stdout)

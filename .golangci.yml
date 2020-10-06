@@ -138,10 +138,11 @@ linters:
   enable:
     - megacheck
     - govet
-    - golint
+
   disable:
     - maligned
     - prealloc
+    - golint
   disable-all: false
   presets:
     - bugs
@@ -211,12 +212,6 @@ issues:
   # of integration: much better don't allow issues in new code.
   # Default is false.
   new: false
-
-  # Show only new issues created after git revision `REV`
-  new-from-rev: REV
-
-  # Show only new issues created in git patch with set file path.
-  new-from-patch: path/to/patch/file
 
 severity:
   # Default value is empty string.

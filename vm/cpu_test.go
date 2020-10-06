@@ -11,7 +11,7 @@ import (
 func TestVirtualMachine_updateFlags(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -31,7 +31,7 @@ func TestVirtualMachine_updateFlags(t *testing.T) {
 func TestVirtualMachine_add(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -57,7 +57,7 @@ func TestVirtualMachine_add(t *testing.T) {
 func TestVirtualMachine_and(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -83,7 +83,7 @@ func TestVirtualMachine_and(t *testing.T) {
 func TestVirtualMachine_not(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -101,7 +101,7 @@ func TestVirtualMachine_not(t *testing.T) {
 func TestVirtualMachine_branch(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -137,7 +137,7 @@ func TestVirtualMachine_branch(t *testing.T) {
 func TestLC3CPU_jump(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -155,7 +155,7 @@ func TestLC3CPU_jump(t *testing.T) {
 func TestLC3CPU_jumpRegister(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -181,7 +181,7 @@ func TestLC3CPU_jumpRegister(t *testing.T) {
 func TestLC3CPU_load(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -199,7 +199,7 @@ func TestLC3CPU_load(t *testing.T) {
 func TestLC3CPU_ldi(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -218,7 +218,7 @@ func TestLC3CPU_ldi(t *testing.T) {
 func TestLC3CPU_loadRegister(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -237,7 +237,7 @@ func TestLC3CPU_loadRegister(t *testing.T) {
 func TestLC3CPU_loadEffectiveAddress(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -255,7 +255,7 @@ func TestLC3CPU_loadEffectiveAddress(t *testing.T) {
 func TestLC3CPU_store(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -272,7 +272,7 @@ func TestLC3CPU_store(t *testing.T) {
 func TestLC3CPU_storeIndirect(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -291,7 +291,7 @@ func TestLC3CPU_storeIndirect(t *testing.T) {
 func TestLC3CPU_storeRegister(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -309,7 +309,7 @@ func TestLC3CPU_storeRegister(t *testing.T) {
 func TestLC3CPU_trapGetc(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -325,7 +325,7 @@ func TestLC3CPU_trapGetc(t *testing.T) {
 func TestLC3CPU_trapOut(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -345,7 +345,7 @@ func TestLC3CPU_trapOut(t *testing.T) {
 func TestLC3CPU_trapPuts(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -370,7 +370,7 @@ func TestLC3CPU_trapPuts(t *testing.T) {
 func TestLC3CPU_trapIn(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(true),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -390,7 +390,7 @@ func TestLC3CPU_trapIn(t *testing.T) {
 func TestLC3CPU_trapPutsp(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(false),
 		GetChar:  GetTestChar,
 	}, &out)
@@ -415,7 +415,7 @@ func TestLC3CPU_trapPutsp(t *testing.T) {
 func TestLC3CPU_trapHalt(t *testing.T) {
 	var out bytes.Buffer
 
-	vm := NewCpu(&LC3RAM{
+	vm := NewCPU(&LC3RAM{
 		CheckKey: KeyPressedMock(true),
 		GetChar:  GetTestChar,
 	}, &out)
