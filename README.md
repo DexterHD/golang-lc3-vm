@@ -1,5 +1,10 @@
 # LC-3 Virtual Machine
 
+![build](https://github.com/idexter/golang-lc3-vm/workflows/build/badge.svg)
+![golangci-lint](https://github.com/idexter/golang-lc3-vm/workflows/golangci-lint/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/idexter/golang-lc3-vm)](https://goreportcard.com/report/github.com/idexter/golang-lc3-vm)
+[![codecov](https://codecov.io/gh/idexter/golang-lc3-vm/branch/master/graph/badge.svg?token=YJIIH1Q7OT)](undefined)
+
 This is my implementation of "Little Computer 3" virtual machine. I was made it to get better
 understanding about what is going on inside a computer and better understand how programming languages work.
 
